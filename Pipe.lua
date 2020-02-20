@@ -2,22 +2,29 @@
 Pipe = Class {}
 
 local pipe_image = love.graphics.newImage('pipe.png');
-local PIPE_MOVING_SPEED = -60
+PIPE_MOVING_SPEED = -60
+PIPE_WIDTH = pipe_image:getWidth();
+PIPE_HEIGHT = pipe_image:getHeight()
 
-function Pipe:init()
+function Pipe:init(type, y)
     self.x = VIRTUAL_WIDTH;
-    self.y = math.random(100, VIRTUAL_HEIGHT - 40);
+    self.y = y;
     
-    self.width = pipe_image:getWidth();
+    self.width = PIPE_WIDTH;
+
+    self.type = type;
 end
 
--- Update function for each pipe
+-- Update function for each pipe - no need
 function Pipe:update(dt)
-    self.x = self.x + PIPE_MOVING_SPEED*dt
+    
 end
 
 
 -- Render function for each pipe
 function Pipe:render()
-    love.graphics.draw(pipe_image, self.x, self.y)
+    love.graphics.draw(pipe_image, self.x, self.type == 'top' and self.y + PIPE_HEIGHT or self.y,
+     0,    -- rotation
+     1,    -- XScale
+     self.type == 'top' and -1 or 1); -- YSCale
 end
