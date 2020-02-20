@@ -53,17 +53,23 @@ local lastY = -PIPE_HEIGHT + math.random(80) + 20
 
 -- Loading function
 function love.load()
+    -- Set scaling texture
     love.graphics.setDefaultFilter('nearest', 'nearest');
+
+    -- Set window title
     love.window.setTitle("Zero Bird");
 
+    -- Set random seed
     math.randomseed(os.time());
 
+    -- Set up screen
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         resizable = true,
         vsyn = true,
         fullscreen = false
     })
 
+    -- Initialize table of pressed key last frame
     love.keyboard.keysPressed = {};
 end
 
@@ -74,7 +80,7 @@ function love.resize(w, h)
 end
 
 
--- Check if anykey is pressed
+-- Check if anykey is pressed function
 function love.keypressed(key)
     love.keyboard.keysPressed[key] = true;
     if key == 'escape' then
@@ -101,6 +107,7 @@ function love.update(dt)
     pipe_spawning_timer = pipe_spawning_timer + dt;
 
     if pipe_spawning_timer > pipe_spawning_cicle then
+
         -- y is no bigger than (screen height - 90) - pipe_height (bottom pipe not render well) 
         -- and no less than -pipe_height + 10 (or else top pipe will not render well)
         local y = math.max(-PIPE_HEIGHT + 10 ,
@@ -112,6 +119,7 @@ function love.update(dt)
         -- update variable
         lastY = y;
         pipe_spawning_timer = 0;
+
     end
 
     -- Update pipes and remove pipe if it is out of screen
@@ -119,7 +127,7 @@ function love.update(dt)
         pipe:update(dt)
     end
 
-    -- Check if any pair need to be remove
+    -- Check if any pair need to be remove. Different loop to avoid buggy 
     for k, pipe in pairs(pair_pipes) do
         if pipe.remove then
             table.remove(pair_pipes, k)
@@ -134,6 +142,7 @@ end
 -- Render game function
 function love.draw()
     push:start()
+
     -- Render background
     love.graphics.draw(background, -background_Scroll, 0);
 
