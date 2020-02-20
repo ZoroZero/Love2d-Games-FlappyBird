@@ -7,8 +7,16 @@ VIRTUAL_WIDTH = 512;
 VIRTUAL_HEIGHT = 288;
 
 local background = love.graphics.newImage('background.png');
-local ground = love.graphics.newImage('ground.png');
+local background_Scroll = 0;
 
+local ground = love.graphics.newImage('ground.png');
+local ground_Scroll = 0;
+
+local BACKGROUND_SCROLL_SPEED = 30;
+local GROUND_SCROLL_SPEED = 60;
+
+
+local BACKGROUND_LOOPING_POINT = 413
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest');
     love.window.setTitle("Zero Bird");
@@ -31,12 +39,18 @@ function love.keypressed(key)
 end
 
 
+function love.update(dt)
+    background_Scroll = (background_Scroll + BACKGROUND_SCROLL_SPEED * dt) % BACKGROUND_LOOPING_POINT;
+
+    ground_Scroll = (ground_Scroll + GROUND_SCROLL_SPEED * dt) % VIRTUAL_WIDTH;
+end
+
 function love.draw()
     push:start()
 
-    love.graphics.draw(background, 0, 0);
+    love.graphics.draw(background, -background_Scroll, 0);
 
-    love.graphics.draw(ground, 0, VIRTUAL_HEIGHT - 16);
+    love.graphics.draw(ground, -ground_Scroll, VIRTUAL_HEIGHT - 16);
 
     push:finish()
 end
