@@ -4,6 +4,7 @@ PIPE_GAP = 100;
 
 function PipePair:init(y)
     self.x = VIRTUAL_WIDTH + 32;
+
     -- y is the top of the upper pipe
     self.y = y
 
@@ -15,6 +16,9 @@ function PipePair:init(y)
 
     -- remove when the pair is ready to be romove
     self.remove = false
+
+    -- Init have bird pass
+    self.hasPassed = false;
 end
 
 -- Update pair of pipes
