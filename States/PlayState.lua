@@ -49,6 +49,7 @@ function PlayState:update(dt)
         if not pipes.hasPassed then
             if pipes.x + PIPE_WIDTH < self.bird.x then
                 self.score = self.score + 1;
+                sounds['score']:play()
                 pipes.hasPassed = true;
             end
         end
@@ -57,6 +58,8 @@ function PlayState:update(dt)
 
         for l, pipe in pairs(pipes.pipes) do
             if self.bird:collide(pipe) then 
+                sounds['explode']:play();
+                sounds['hurt']:play();
                 game_State_Machine:change('game_over', self.score)
                 break;
             end

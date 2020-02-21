@@ -74,11 +74,27 @@ function love.load()
         ['play'] = function() return PlayState(); end,
         ['game_over'] = function() return GameOverState() end
     }
-
     game_State_Machine:change('title');
+
+    -- Set up sounds
+    sounds = {
+        ['jump'] = love.audio.newSource('sounds/jump.wav', 'static'),
+        ['hurt'] = love.audio.newSource('sounds/hurt.wav', 'static'),
+        ['score'] = love.audio.newSource('sounds/score.wav', 'static'),
+        ['explode'] = love.audio.newSource('sounds/explosion.wav', 'static'),
+
+        -- Background music
+        ['background'] = love.audio.newSource('sounds/marios_way.mp3', 'static')
+    }
+
+    -- PLay background music
+    sounds['background']:setLooping(true);
+    sounds['background']:play();
 
     -- Initialize table of pressed key last frame
     love.keyboard.keysPressed = {};
+
+    love.mouse.mousePressed = {};
 end
 
 
@@ -96,6 +112,8 @@ function love.update(dt)
 
     -- Reset key pressed table
     love.keyboard.keysPressed = {};
+
+    love.mouse.mousePressed = {};
 end
 
 
@@ -135,9 +153,16 @@ function love.keypressed(key)
     end
 end
 
-
+function love.mousepressed(x, y, button, isTouch)
+    love.mouse.mousePressed[button] = true
+end
 
 -- Check if a certain key was pressed last frame
 function love.keyboard.wasPressed(key)
     return love.keyboard.keysPressed[key];
+end
+
+
+function love.mouse.wasPressed(key)
+    return love.mouse.mousePressed[key];
 end
