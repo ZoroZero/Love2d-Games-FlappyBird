@@ -18,6 +18,15 @@ function Bird:update(dt)
     self.y = math.max(0, self.y + self.dy);
 end
 
+
+function Bird:collide(pipe)
+    return (self.x < pipe.x + PIPE_WIDTH) and 
+    (self. x + self.width > pipe.x) and
+    (self.y < pipe.y + PIPE_HEIGHT) and
+    (self.y + self.height > pipe.y)
+end
+
+
 function Bird:render()
     love.graphics.draw(self.sprite, self.x, self.y)
 end

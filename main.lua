@@ -49,7 +49,13 @@ local pipe_spawning_timer = 0;
 local pipe_spawning_cicle = 2.2;
 
 -- Init y of the last spawn pair
-local lastY = -PIPE_HEIGHT + math.random(80) + 20
+local lastY = -PIPE_HEIGHT + math.random(80) + 20;
+
+-- Init check game_over
+local game_over = false;
+
+
+
 
 -- Loading function
 function love.load()
@@ -74,69 +80,63 @@ function love.load()
 end
 
 
--- Resize window function
-function love.resize(w, h)
-    push:resize(w, h);
-end
-
-
--- Check if anykey is pressed function
-function love.keypressed(key)
-    love.keyboard.keysPressed[key] = true;
-    if key == 'escape' then
-        love.event.quit();
-    end
-end
-
--- Check if a certain key was pressed last frame
-function love.keyboard.wasPressed(key)
-    return love.keyboard.keysPressed[key];
-end
 
 
 -- Update game function
 function love.update(dt)
-    -- Upadte background and ground
-    background_Scroll = (background_Scroll + BACKGROUND_SCROLL_SPEED * dt) % BACKGROUND_LOOPING_POINT;
-    ground_Scroll = (ground_Scroll + GROUND_SCROLL_SPEED * dt) % GROUND_LOOPING_POINT;
 
-    -- Update bird
-    bird:update(dt);
+    if not game_over then
+        -- Upadte background and ground
+        background_Scroll = (background_Scroll + BACKGROUND_SCROLL_SPEED * dt) % BACKGROUND_LOOPING_POINT;
+        ground_Scroll = (ground_Scroll + GROUND_SCROLL_SPEED * dt) % GROUND_LOOPING_POINT;
 
-    -- spawn pipes
-    pipe_spawning_timer = pipe_spawning_timer + dt;
+        -- Update bird
+        bird:update(dt);
 
-    if pipe_spawning_timer > pipe_spawning_cicle then
+        -- spawn pipes
+        pipe_spawning_timer = pipe_spawning_timer + dt;
 
-        -- y is no bigger than (screen height - 90) - pipe_height (bottom pipe not render well) 
-        -- and no less than -pipe_height + 10 (or else top pipe will not render well)
-        local y = math.max(-PIPE_HEIGHT + 10 ,
-        math.min(lastY + math.random(-20, 20), VIRTUAL_HEIGHT - PIPE_GAP - PIPE_HEIGHT) );
+        if pipe_spawning_timer > pipe_spawning_cicle then
 
-        -- Add pair to table
-        table.insert(pair_pipes, PipePair(y));
+            -- y is no bigger than (screen height - 90) - pipe_height (bottom pipe not render well) 
+            -- and no less than -pipe_height + 10 (or else top pipe will not render well)
+            local y = math.max(-PIPE_HEIGHT + 10 ,
+            math.min(lastY + math.random(-20, 20), VIRTUAL_HEIGHT - PIPE_GAP - PIPE_HEIGHT) );
 
-        -- update variable
-        lastY = y;
-        pipe_spawning_timer = 0;
+            -- Add pair to table
+            table.insert(pair_pipes, PipePair(y));
 
-    end
+            -- update variable
+            lastY = y;
+            pipe_spawning_timer = 0;
 
-    -- Update pipes and remove pipe if it is out of screen
-    for k, pipe in pairs(pair_pipes) do
-        pipe:update(dt)
-    end
+        end
 
-    -- Check if any pair need to be remove. Different loop to avoid buggy 
-    for k, pipe in pairs(pair_pipes) do
-        if pipe.remove then
-            table.remove(pair_pipes, k)
+        -- Update pipes and remove pipe if it is out of screen
+        for k, pipes in pairs(pair_pipes) do
+            pipes:update(dt)
+            for l, pipe in pairs(pipes.pipes) do
+                if bird:collide(pipe) then 
+                    game_over = true;
+                    break;
+                end
+            end
+        end
+
+        -- Check if any pair need to be remove. Different loop to avoid buggy 
+        for k, pipe in pairs(pair_pipes) do
+            if pipe.remove then
+                table.remove(pair_pipes, k)
+            end
         end
     end
 
     -- Reset key pressed table
     love.keyboard.keysPressed = {};
 end
+
+
+
 
 
 -- Render game function
@@ -158,4 +158,27 @@ function love.draw()
     bird:render();
 
     push:finish();
+end
+
+
+
+-- Resize window function
+function love.resize(w, h)
+    push:resize(w, h);
+end
+
+
+-- Check if anykey is pressed function
+function love.keypressed(key)
+    love.keyboard.keysPressed[key] = true;
+    if key == 'escape' then
+        love.event.quit();
+    end
+end
+
+
+
+-- Check if a certain key was pressed last frame
+function love.keyboard.wasPressed(key)
+    return love.keyboard.keysPressed[key];
 end
