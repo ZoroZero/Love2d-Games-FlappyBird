@@ -1,7 +1,7 @@
 
 Pipe = Class {}
 
-local pipe_image = love.graphics.newImage('pipe.png');
+local pipe_image = love.graphics.newImage('assets/pipe.png');
 PIPE_MOVING_SPEED = -60
 PIPE_WIDTH = pipe_image:getWidth();
 PIPE_HEIGHT = pipe_image:getHeight()

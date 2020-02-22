@@ -26,11 +26,11 @@ GRAVITY_ACCELERATION = 10;
 JUMP_ACCELERATION = -4;
 
 -- Background
-local background = love.graphics.newImage('background.png');
+local background = love.graphics.newImage('assets/background.png');
 local background_Scroll = 0;
 
 -- Ground
-local ground = love.graphics.newImage('ground.png');
+local ground = love.graphics.newImage('assets/ground.png');
 local ground_Scroll = 0;
 
 -- Back ground and ground scrolling speed
